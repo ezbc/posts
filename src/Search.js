@@ -1,18 +1,10 @@
 import { useEffect, useState } from 'react';
 
-const Search = ({ availablePosts, handleFilteredPosts, ...props }) => {
+const Search = ({ availablePosts, handleSearch, ...props }) => {
     const [searchText, setSearchText] = useState('');
 
     useEffect(() => {
-        handleFilteredPosts(
-            availablePosts.filter(post => {
-                const lowerCaseSearchText = searchText.toLowerCase();
-                return (
-                    post.username.toLowerCase().includes(lowerCaseSearchText) ||
-                    post.content.toLowerCase().includes(lowerCaseSearchText)
-                );
-            })
-        );
+        handleSearch(searchText);
     }, [searchText, availablePosts]);
 
     return (
@@ -23,7 +15,6 @@ const Search = ({ availablePosts, handleFilteredPosts, ...props }) => {
                 value={searchText}
                 onChange={event => setSearchText(event.target.value)}
             ></input>
-
         </div>
     );
 };
