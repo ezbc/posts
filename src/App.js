@@ -1,16 +1,14 @@
 import React from 'react';
+import Activities from './Activities';
 import Posts from './Posts';
 
-/* Topics covered in lesson
-
-
-
-*/
-
 function App() {
-  return <Posts/>
+    return (
+        <>
+            <Activities />
+            <Posts />
+        </>
+    );
 }
 
-
 export default App;
-

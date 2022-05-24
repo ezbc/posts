@@ -1,18 +1,14 @@
-import { useEffect, useState, useReducer } from 'react';
+import { useEffect, useReducer } from 'react';
 import AddPost from './AddPost';
 import Search from './Search';
 import Post from './Post';
 import postsReducer from './PostsState';
+import Activities from './Activities';
+import Airtable from 'airtable';
 
-const useSemiPersistentState = (key, initialState) => {
-    const item = localStorage.getItem(key);
-    const [state, setState] = useState(
-        !!item ? JSON.parse(item) : initialState
-    );
-    useEffect(() => localStorage.setItem(key, JSON.stringify(state)), [state]);
-
-    return [state, setState];
-};
+const base = new Airtable({
+    apiKey: process.env.REACT_APP_AIRTABLE_API_KEY,
+}).base(process.env.REACT_APP_AIRTABLE_BASE_ID);
 
 const useAsyncState = (key, initialState) => {
     const item = JSON.parse(localStorage.getItem(key)) || initialState;
@@ -36,17 +32,15 @@ const Posts = () => {
         postsReducer,
         {
             posts: [],
-            isLoading: true,
+            isLoading: false,
             filteredPosts: [],
         }
     );
 
-    // const [posts, setPosts] = useState([]);
-    // const [isLoading, setIsLoading] = useState(true);
-    // const [filteredPosts, setFilteredPosts] = useState(posts);
     const [getPostsAsync, savePostsAsync] = useAsyncState('posts', posts);
 
     useEffect(() => {
+        postsDispatcher({ type: 'FETCH_POSTS_INIT' });
         getPostsAsync.then(posts => {
             postsDispatcher({
                 type: 'FETCH_POSTS_SUCCESSFUL',
@@ -54,21 +48,47 @@ const Posts = () => {
                     posts,
                 },
             });
-            // setPosts(posts);
-            // setIsLoading(true);
         });
     }, []);
+
+    // fetch request with POST
 
     return (
         <div style={{ padding: '16px' }}>
             <AddPost
                 handleAddPost={newPost => {
+                    fetch(
+                        `https://api.airtable.com/v0/${process.env.REACT_APP_AIRTABLE_BASE_ID}/posts`,
+                        {
+                            headers: {
+                                Authorization: `Bearer ${process.env.REACT_APP_AIRTABLE_API_KEY}`,
+                                'Content-Type': 'application/json',
+                            },
+                            method: 'POST',
+                            body: JSON.stringify({
+                                records: [
+                                    {
+                                        fields: {
+                                            username: newPost.username,
+                                            content: newPost.content,
+                                        },
+                                    },
+                                ],
+                            }),
+                        }
+                    );
+                    // base('posts').create([
+                    //     {
+                    //         fields: {
+                    //             username: newPost.username,
+                    //             content: newPost.content,
+                    //         },
+                    //     },
+                    // ]);
                     postsDispatcher({
                         type: 'ADD_POST',
                         payload: { newPost },
                     });
-                    // setPosts(newPosts);
-                    // savePostsAsync(newPosts);
                 }}
             />
             <h2>Posts</h2>
