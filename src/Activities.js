@@ -1,18 +1,12 @@
+import Header from './Header';
 const Activities = () => (
     <>
-        <h1>Lessons</h1>
-        <ul>
-            <li>React Fundamentals > Data Fetching</li>
-            <li> React Fundamentals > Data Re-Fetching</li>
-            <li>React Fundamentals > Memoized Handlers</li>
-            <li>React Fundamentals > Explicit Data Fetching</li>
-        </ul>
+        <Header></Header>
         <h1>Activities</h1>
         <ol>
-            <li>Fetch posts from airtable</li>
-            <li>Add a post to airtable</li>
-            <li>Delete a post from airtable</li>
-            <li>Memoization</li>
+            <li>Convert the search Submit button to use a form submit</li>
+            <li>Convert the add post to a class component</li>
+            <li>Server-side search</li>
         </ol>
     </>
 );
