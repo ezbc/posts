@@ -10,6 +10,7 @@ const postsReducer = (state, action) => {
             ...state,
             isLoading: false,
             posts: action.payload.posts,
+            filteredPosts: action.payload.posts,
         };
     }
     if (action.type === 'ADD_POST') {
@@ -20,17 +21,10 @@ const postsReducer = (state, action) => {
             posts: newPosts,
         };
     }
-    if (action.type == 'FILTER_POSTS') {
-        const filteredPosts = state.posts.filter(post => {
-            const lowerCaseSearchText = action.payload.searchTerm.toLowerCase();
-            return (
-                post.username.toLowerCase().includes(lowerCaseSearchText) ||
-                post.content.toLowerCase().includes(lowerCaseSearchText)
-            );
-        });
+    if (action.type == 'FILTER_POSTS_SUCCESSFUL') {
         return {
             ...state,
-            filteredPosts: filteredPosts,
+            filteredPosts: action.payload.filteredPosts,
         };
     }
 };

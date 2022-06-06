@@ -3,18 +3,22 @@ import { useEffect, useState } from 'react';
 const Search = ({ availablePosts, handleSearch, ...props }) => {
     const [searchText, setSearchText] = useState('');
 
-    useEffect(() => {
-        handleSearch(searchText);
-    }, [searchText, availablePosts]);
+    const submit = event => {
+        event.preventDefault();
+        !!searchText && handleSearch(searchText);
+    };
 
     return (
         <div {...props}>
-            <label htmlFor="search">Search</label>
-            <input
-                id="search"
-                value={searchText}
-                onChange={event => setSearchText(event.target.value)}
-            ></input>
+            <form onSubmit={submit}>
+                <label htmlFor="search">Search</label>
+                <input
+                    id="search"
+                    value={searchText}
+                    onChange={event => setSearchText(event.target.value)}
+                ></input>
+                <button type="submit">Submit search</button>
+            </form>
         </div>
     );
 };
