@@ -1,5 +1,12 @@
 import { useState } from 'react';
-const AddPost = ({ handleAddPost }) => {
+import styled from 'styled-components';
+import theme from './theme';
+
+const Title = styled.h2`
+    font-size: 16px;
+`;
+
+const AddPost = ({ handleAddPost, className }) => {
     const [username, setUsername] = useState('');
     const [content, setContent] = useState('');
 
@@ -11,8 +18,8 @@ const AddPost = ({ handleAddPost }) => {
     };
 
     return (
-        <div style={{ maxWidth: '400px' }}>
-            <h2>Add Post</h2>
+        <div className={className} style={{ maxWidth: '400px' }}>
+            <Title>Add Post</Title>
             <form
                 id="filter-text"
                 onSubmit={event => {
@@ -46,4 +53,9 @@ const AddPost = ({ handleAddPost }) => {
     );
 };
 
-export default AddPost;
+export default styled(AddPost)`
+    button {
+        background-color: ${theme.colors.secondary};
+        color: ${theme.colors.primary};
+    }
+`;

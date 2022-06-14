@@ -8,16 +8,24 @@ import {
     Routes,
     Route,
 } from 'react-router-dom';
+import styled from 'styled-components';
+import theme from './theme';
 
-function App() {
+const App = ({ className }) => {
     return (
-        <BrowserRouter>
-            <Routes>
-                <Route path="/activities" element={<Activities />} />
-                <Route path="/" element={<Posts />} />
-            </Routes>
-        </BrowserRouter>
+        <div className={className}>
+            <BrowserRouter>
+                <Routes>
+                    <Route path="/activities" element={<Activities />} />
+                    <Route path="/" element={<Posts />} />
+                </Routes>
+            </BrowserRouter>
+        </div>
     );
-}
+};
 
-export default App;
+export default styled(App)`
+    background-color: ${theme.elements.backgroundColor};
+
+    // font-family: Montserrat;
+`;
