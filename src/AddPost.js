@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import styled from 'styled-components';
-import theme from './theme';
+import Button from './ui/Button';
 
 const Title = styled.h2`
     font-size: 16px;
@@ -33,29 +33,36 @@ const AddPost = ({ handleAddPost, className }) => {
                     setUsername('');
                     setContent('');
                 }}
-                style={{ display: 'flex', flexDirection: 'column' }}
             >
-                <label htmlFor="username">Username</label>
-                <input
-                    id="username"
-                    value={username}
-                    onChange={onChangeUsername}
-                ></input>
-                <label htmlFor="content">content</label>
-                <input
-                    id="content"
-                    value={content}
-                    onChange={onChangeContent}
-                ></input>
-                <button type="submit">Submit</button>
+                <div>
+                    <label htmlFor="username">Username</label>
+                    <input
+                        id="username"
+                        value={username}
+                        onChange={onChangeUsername}
+                    ></input>
+                </div>
+                <div>
+                    <label htmlFor="content">Content</label>
+                    <input
+                        id="content"
+                        value={content}
+                        onChange={onChangeContent}
+                    ></input>
+                </div>
+                <Button type="submit">Add</Button>
             </form>
         </div>
     );
 };
 
 export default styled(AddPost)`
-    button {
-        background-color: ${theme.colors.secondary};
-        color: ${theme.colors.primary};
+    form {
+        div {
+            margin-bottom: 0.5em;
+        }
+        div > * {
+            margin-right: 0.5em;
+        }
     }
 `;
