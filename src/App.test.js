@@ -1,8 +1,11 @@
 import { render, screen } from '@testing-library/react';
 import App from './App';
 
-test('renders learn react link', () => {
-  render(<App />);
-  const linkElement = screen.getByText(/learn react/i);
-  expect(linkElement).toBeInTheDocument();
+test('Navigate to Activities we should see state management in list', () => {
+    render(<App />);
+    const linkElement = screen.getByText(/Activities/i);
+    expect(linkElement).toBeInTheDocument();
+    linkElement.click();
+    const activity = screen.queryByText(/State management pattern/i);
+    expect(activity).toBeInTheDocument();
 });

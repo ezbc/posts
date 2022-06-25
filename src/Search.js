@@ -1,19 +1,19 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import Button from './ui/Button';
+import { isNil } from 'ramda';
 
 function Search({ handleSearch, className }) {
     const [searchText, setSearchText] = useState('');
 
     const submit = event => {
         event.preventDefault();
-        !!searchText && handleSearch(searchText);
+        !isNil(searchText) && handleSearch(searchText);
     };
 
     return (
         <div className={className}>
             <form onSubmit={submit}>
-                {/* <label htmlFor="search">Search</label> */}
                 <input
                     id="search"
                     value={searchText}

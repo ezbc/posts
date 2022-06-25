@@ -1,17 +1,17 @@
 import styled from 'styled-components';
-import { colors } from './theme';
+import Card, { Title, Text } from './ui/layouts/Card';
+
 function Post({ username, content, className }) {
     return (
-        <div className={className}>
-            <h3>{username}</h3>
-            <p>{content}</p>
-        </div>
+        <Card className={className}>
+            <Card.Title>{username}</Card.Title>
+            <Card.Text>{content}</Card.Text>
+        </Card>
     );
 }
+// <div>
+//     <h2></h2>
+//     <p></p>
+// </div>
 
-export default styled(Post)`
-    border: 2px solid ${colors.darkStrong};
-    border-radius: 4px;
-    width: 12em;
-    padding: 1em;
-`;
+export default styled(Post)``;

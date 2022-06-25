@@ -1,4 +1,4 @@
-import { useEffect, useReducer } from 'react';
+import { useCallback, useMemo, useEffect, useReducer } from 'react';
 import Airtable from 'airtable';
 import styled from 'styled-components';
 import AddPost from './AddPost';
@@ -36,6 +36,21 @@ const Posts = ({ className }) => {
             );
     }, []);
 
+    const handleSearch = searchTerm => {
+        base('posts')
+            .select({
+                view: 'Grid view',
+                filterByFormula: `SEARCH('${searchTerm.toLowerCase()}', {content})`,
+            })
+            .firstPage((err, records) => {
+                const filteredPosts = records.map(record => record.fields);
+                postsDispatcher({
+                    type: 'FILTER_POSTS_SUCCESSFUL',
+                    payload: { filteredPosts },
+                });
+            });
+    };
+
     return (
         <div className={className}>
             <Header></Header>
@@ -55,25 +70,7 @@ const Posts = ({ className }) => {
                     });
                 }}
             />
-            <Search
-                availablePosts={posts}
-                handleSearch={searchTerm => {
-                    base('posts')
-                        .select({
-                            view: 'Grid view',
-                            filterByFormula: `SEARCH('${searchTerm.toLowerCase()}', {content})`,
-                        })
-                        .firstPage((err, records) => {
-                            const filteredPosts = records.map(
-                                record => record.fields
-                            );
-                            postsDispatcher({
-                                type: 'FILTER_POSTS_SUCCESSFUL',
-                                payload: { filteredPosts },
-                            });
-                        });
-                }}
-            />
+            <Search availablePosts={posts} handleSearch={handleSearch} />
             <div>
                 {isLoading ? (
                     <p>Is Loading</p>
