@@ -1,75 +1,18 @@
-import { useCallback, useMemo, useEffect, useReducer } from 'react';
-import Airtable from 'airtable';
 import styled from 'styled-components';
 import AddPost from './AddPost';
 import Search from './Search';
 import Post from './Post';
-import postsReducer from './PostsState';
 import Header from './Header';
-import theme from './theme';
+import usePosts, { PostsProvider } from './usePosts';
 
-const base = new Airtable({
-    apiKey: process.env.REACT_APP_AIRTABLE_API_KEY,
-}).base(process.env.REACT_APP_AIRTABLE_BASE_ID);
-
-const Posts = ({ className }) => {
-    const [{ posts, isLoading, filteredPosts }, postsDispatcher] = useReducer(
-        postsReducer,
-        {
-            posts: [],
-            isLoading: false,
-            filteredPosts: [],
-        }
-    );
-
-    useEffect(() => {
-        postsDispatcher({ type: 'FETCH_POSTS_INIT' });
-        base('posts')
-            .select({ view: 'Grid view' })
-            .firstPage((err, records) =>
-                postsDispatcher({
-                    type: 'FETCH_POSTS_SUCCESSFUL',
-                    payload: {
-                        posts: records.map(records => records.fields),
-                    },
-                })
-            );
-    }, []);
-
-    const handleSearch = searchTerm => {
-        base('posts')
-            .select({
-                view: 'Grid view',
-                filterByFormula: `SEARCH('${searchTerm.toLowerCase()}', {content})`,
-            })
-            .firstPage((err, records) => {
-                const filteredPosts = records.map(record => record.fields);
-                postsDispatcher({
-                    type: 'FILTER_POSTS_SUCCESSFUL',
-                    payload: { filteredPosts },
-                });
-            });
-    };
+const Posts = styled(({ className }) => {
+    const { posts, isLoading, filteredPosts, createPost, handleSearch } =
+        usePosts();
 
     return (
         <div className={className}>
             <Header></Header>
-            <AddPost
-                handleAddPost={newPost => {
-                    base('posts').create([
-                        {
-                            fields: {
-                                username: newPost.username,
-                                content: newPost.content,
-                            },
-                        },
-                    ]);
-                    postsDispatcher({
-                        type: 'ADD_POST',
-                        payload: { newPost },
-                    });
-                }}
-            />
+            <AddPost handleAddPost={createPost} />
             <Search availablePosts={posts} handleSearch={handleSearch} />
             <div>
                 {isLoading ? (
@@ -88,9 +31,7 @@ const Posts = ({ className }) => {
             </div>
         </div>
     );
-};
-
-export default styled(Posts)`
+})`
     padding: 1em;
     > * {
         margin-bottom: 1em;
@@ -112,3 +53,11 @@ export default styled(Posts)`
         }
     }
 `;
+
+const PostsWithContext = ({ className }) => (
+    <PostsProvider className={className}>
+        <Posts />
+    </PostsProvider>
+);
+
+export default PostsWithContext;
