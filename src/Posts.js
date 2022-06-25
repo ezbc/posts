@@ -1,16 +1,18 @@
 import { useEffect, useReducer } from 'react';
+import Airtable from 'airtable';
+import styled from 'styled-components';
 import AddPost from './AddPost';
 import Search from './Search';
 import Post from './Post';
 import postsReducer from './PostsState';
-import Airtable from 'airtable';
 import Header from './Header';
+import theme from './theme';
 
 const base = new Airtable({
     apiKey: process.env.REACT_APP_AIRTABLE_API_KEY,
 }).base(process.env.REACT_APP_AIRTABLE_BASE_ID);
 
-const Posts = () => {
+const Posts = ({ className }) => {
     const [{ posts, isLoading, filteredPosts }, postsDispatcher] = useReducer(
         postsReducer,
         {
@@ -35,7 +37,7 @@ const Posts = () => {
     }, []);
 
     return (
-        <div style={{ padding: '16px' }}>
+        <div className={className}>
             <Header></Header>
             <AddPost
                 handleAddPost={newPost => {
@@ -53,7 +55,6 @@ const Posts = () => {
                     });
                 }}
             />
-            <h2>Posts</h2>
             <Search
                 availablePosts={posts}
                 handleSearch={searchTerm => {
@@ -72,18 +73,17 @@ const Posts = () => {
                             });
                         });
                 }}
-                style={{ marginTop: '16px' }}
             />
-            <div style={{ height: '300px', maxWidth: '600px' }}>
+            <div>
                 {isLoading ? (
                     <p>Is Loading</p>
                 ) : (
-                    <div style={{ display: 'flex', flexDirection: 'vertical' }}>
-                        {filteredPosts.map(post => (
+                    <div className="posts">
+                        {filteredPosts.map((post, index) => (
                             <Post
                                 username={post.username}
                                 content={post.content}
-                                key={post.key}
+                                key={index}
                             ></Post>
                         ))}
                     </div>
@@ -93,4 +93,25 @@ const Posts = () => {
     );
 };
 
-export default Posts;
+export default styled(Posts)`
+    padding: 1em;
+    > * {
+        margin-bottom: 1em;
+    }
+
+    ${AddPost} {
+        margin-left: 1em;
+        padding: 1em;
+        margin-bottom: 3em;
+    }
+
+    .posts {
+        display: flex;
+        flex-wrap: wrap;
+        flex-direction: row;
+
+        ${Post} {
+            margin: 1em;
+        }
+    }
+`;

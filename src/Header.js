@@ -1,13 +1,20 @@
 import { Link } from 'react-router-dom';
+import styled from 'styled-components';
+import { ReactComponent as Home } from './icons/home.svg';
 
-const Header = () => {
-    // links to activities and home page
+const Header = ({ className }) => {
     return (
-        <>
-            <Link to="/">Home</Link>
-            <Link to="/activities">Activies</Link>
-        </>
+        <div className={className}>
+            <Link to="/">
+                <Home width="24px" height="24px" />
+            </Link>
+            <Link to="/activities">Activities</Link>
+        </div>
     );
 };
 
-export default Header;
+export default styled(Header)`
+    > * {
+        margin-right: 1em;
+    }
+`;

@@ -1,5 +1,12 @@
 import { useState } from 'react';
-const AddPost = ({ handleAddPost }) => {
+import styled from 'styled-components';
+import Button from './ui/Button';
+
+const Title = styled.h2`
+    font-size: 16px;
+`;
+
+const AddPost = ({ handleAddPost, className }) => {
     const [username, setUsername] = useState('');
     const [content, setContent] = useState('');
 
@@ -11,8 +18,8 @@ const AddPost = ({ handleAddPost }) => {
     };
 
     return (
-        <div style={{ maxWidth: '400px' }}>
-            <h2>Add Post</h2>
+        <div className={className} style={{ maxWidth: '400px' }}>
+            <Title>Add Post</Title>
             <form
                 id="filter-text"
                 onSubmit={event => {
@@ -26,24 +33,36 @@ const AddPost = ({ handleAddPost }) => {
                     setUsername('');
                     setContent('');
                 }}
-                style={{ display: 'flex', flexDirection: 'column' }}
             >
-                <label htmlFor="username">Username</label>
-                <input
-                    id="username"
-                    value={username}
-                    onChange={onChangeUsername}
-                ></input>
-                <label htmlFor="content">content</label>
-                <input
-                    id="content"
-                    value={content}
-                    onChange={onChangeContent}
-                ></input>
-                <button type="submit">Submit</button>
+                <div>
+                    <label htmlFor="username">Username</label>
+                    <input
+                        id="username"
+                        value={username}
+                        onChange={onChangeUsername}
+                    ></input>
+                </div>
+                <div>
+                    <label htmlFor="content">Content</label>
+                    <input
+                        id="content"
+                        value={content}
+                        onChange={onChangeContent}
+                    ></input>
+                </div>
+                <Button type="submit">Add</Button>
             </form>
         </div>
     );
 };
 
-export default AddPost;
+export default styled(AddPost)`
+    form {
+        div {
+            margin-bottom: 0.5em;
+        }
+        div > * {
+            margin-right: 0.5em;
+        }
+    }
+`;

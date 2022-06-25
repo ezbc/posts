@@ -4,9 +4,13 @@ const Activities = () => (
         <Header></Header>
         <h1>Activities</h1>
         <ol>
-            <li>Convert the search Submit button to use a form submit</li>
-            <li>Convert the add post to a class component</li>
-            <li>Server-side search</li>
+            <li>Install styled components</li>
+            <li>Use custom font and background</li>
+            <li>Build for mobile then desktop</li>
+            <li>Style navigation</li>
+            <li>Show nested CSS</li>
+            <li>Use svg icon for submit search</li>
+            <li>Create a theme file</li>
         </ol>
     </>
 );
