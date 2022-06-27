@@ -3,7 +3,7 @@ import Activities from './Activities';
 import Posts from './Posts';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import styled from 'styled-components';
-import theme from './theme';
+import theme from '../theme';
 
 const App = ({ className }) => {
     return (

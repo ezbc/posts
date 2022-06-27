@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import styled from 'styled-components';
-import Button from './ui/Button';
-import Card from './ui/layouts/Card';
+import Button from '../ui/Button';
+import Card from '../ui/layouts/Card';
 
 const Title = styled.h2`
     font-size: 16px;

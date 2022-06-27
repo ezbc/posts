@@ -4,9 +4,10 @@ const Activities = () => (
         <Header></Header>
         <h1>Activities</h1>
         <ol>
-            <li>Layout and compound components</li>
+            <li>Folder structure, homework way vs other ways</li>
+            <li>Aliases</li>
             <li>State management pattern</li>
-            <li>Testing</li>
+            <li>Prop types vs typescript</li>
             <li>Career questions</li>
         </ol>
     </>

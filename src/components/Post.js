@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import Card, { Title, Text } from './ui/layouts/Card';
+import Card, { Title, Text } from '../ui/layouts/Card';
 
 function Post({ username, content, className }) {
     return (

@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
-import { ReactComponent as Home } from './icons/home.svg';
+import { ReactComponent as Home } from '../icons/home.svg';
 
 const Header = ({ className }) => {
     return (

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import Button from './ui/Button';
+import Button from '../ui/Button';
 import { isNil } from 'ramda';
 
 function Search({ handleSearch, className }) {
