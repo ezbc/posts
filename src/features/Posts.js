@@ -1,19 +1,18 @@
 import styled from 'styled-components';
-import AddPost from './AddPost';
-import Search from './Search';
-import Post from './Post';
-import Header from './Header';
-import usePosts, { PostsProvider } from './usePosts';
+import AddPost from 'features/AddPost';
+import Search from 'features/Search';
+import Post from 'features/Post';
+import Header from 'features/Header';
+import usePosts, { PostsProvider } from 'features/PostState/usePosts';
 
 const Posts = styled(({ className }) => {
-    const { posts, isLoading, filteredPosts, createPost, handleSearch } =
-        usePosts();
+    const { isLoading, filteredPosts } = usePosts();
 
     return (
         <div className={className}>
             <Header></Header>
-            <AddPost handleAddPost={createPost} />
-            <Search availablePosts={posts} handleSearch={handleSearch} />
+            <AddPost />
+            <Search />
             <div>
                 {isLoading ? (
                     <p>Is Loading</p>

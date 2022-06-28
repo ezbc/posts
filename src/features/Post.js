@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import Card, { Title, Text } from '../ui/layouts/Card';
+import Card, { Title, Text } from 'ui/layouts/Card';
 
 function Post({ username, content, className }) {
     return (
@@ -9,9 +9,5 @@ function Post({ username, content, className }) {
         </Card>
     );
 }
-// <div>
-//     <h2></h2>
-//     <p></p>
-// </div>
 
 export default styled(Post)``;

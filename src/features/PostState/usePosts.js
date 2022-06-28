@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useReducer } from 'react';
-import postsReducer from './PostsState';
+import postsReducer from './postsReducer';
 import Airtable from 'airtable';
 
 export const PostsContext = createContext();

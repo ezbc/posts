@@ -1,4 +1,4 @@
-import Header from './Header';
+import Header from 'features/Header';
 const Activities = () => (
     <>
         <Header></Header>
