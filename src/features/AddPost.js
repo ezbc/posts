@@ -1,15 +1,17 @@
 import { useState } from 'react';
 import styled from 'styled-components';
-import Button from './ui/Button';
-import Card from './ui/layouts/Card';
+import Button from 'ui/Button';
+import Card from 'ui/layouts/Card';
+import usePosts from 'features/PostState/usePosts';
 
 const Title = styled.h2`
     font-size: 16px;
 `;
 
-const AddPost = ({ handleAddPost, className }) => {
+const AddPost = ({ className }) => {
     const [username, setUsername] = useState('');
     const [content, setContent] = useState('');
+    const { createPost: handleAddPost } = usePosts();
 
     const onChangeUsername = event => {
         setUsername(event.target.value);

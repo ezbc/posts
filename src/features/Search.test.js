@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { render, screen, fireEvent, act } from '@testing-library/react';
-import Search from './Search';
+import Search from 'features/Search';
 
 describe('Search', () => {
     test('When submitting text in the search form, the search component calls the handleSearch', () => {

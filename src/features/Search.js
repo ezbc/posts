@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import Button from './ui/Button';
 import { isNil } from 'ramda';
+import Button from 'ui/Button';
+import usePosts from 'features/PostState/usePosts';
 
-function Search({ handleSearch, className }) {
+function Search({ className }) {
     const [searchText, setSearchText] = useState('');
+    const { handleSearch } = usePosts();
 
     const submit = event => {
         event.preventDefault();
