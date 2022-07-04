@@ -13,14 +13,6 @@ const postsReducer = (state, action) => {
             filteredPosts: action.payload.posts,
         };
     }
-    if (action.type === 'ADD_POST') {
-        const newPosts = [...state.posts, action.payload.newPost];
-        return {
-            ...state,
-            isLoading: false,
-            posts: newPosts,
-        };
-    }
     if (action.type == 'FILTER_POSTS_SUCCESSFUL') {
         return {
             ...state,
