@@ -18,7 +18,7 @@ export const PostsProvider = ({ children }) => {
         }
     );
 
-    useEffect(() => {
+    const fetchPosts = () => {
         postsDispatcher({ type: 'FETCH_POSTS_INIT' });
         base('posts')
             .select({ view: 'Grid view' })
@@ -30,6 +30,9 @@ export const PostsProvider = ({ children }) => {
                     },
                 })
             );
+    };
+    useEffect(() => {
+        fetchPosts();
     }, []);
 
     const handleSearch = searchTerm => {
@@ -56,10 +59,7 @@ export const PostsProvider = ({ children }) => {
                 },
             },
         ]);
-        postsDispatcher({
-            type: 'ADD_POST',
-            payload: { newPost },
-        });
+        fetchPosts();
     };
 
     return (
