@@ -5,7 +5,7 @@ const Title = styled.h3`
     font-size: 1.2em;
 `;
 
-const Text = styled.p`
+const Text = styled.div`
     font-size: 1em;
 `;
 

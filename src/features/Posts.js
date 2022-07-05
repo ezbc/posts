@@ -4,6 +4,7 @@ import Search from 'features/Search';
 import Post from 'features/Post';
 import Header from 'features/Header';
 import usePosts, { PostsProvider } from 'features/PostState/usePosts';
+import LoadMorePosts from 'features/LoadMorePosts';
 
 const Posts = styled(({ className }) => {
     const { isLoading, filteredPosts } = usePosts();
@@ -28,6 +29,7 @@ const Posts = styled(({ className }) => {
                     </div>
                 )}
             </div>
+            <LoadMorePosts />
         </div>
     );
 })`
