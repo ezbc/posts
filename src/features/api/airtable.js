@@ -11,6 +11,7 @@ const retrievePosts = () =>
     base(TABLE_NAME).select({
         view: 'Grid view',
         pageSize: PAGE_SIZE,
+        sort: [{ field: 'content', direction: 'desc' }],
     });
 
 const search = searchTerm =>
