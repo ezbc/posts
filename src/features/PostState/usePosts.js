@@ -5,67 +5,46 @@ import airtableApi from 'features/api/airtable';
 export const PostsContext = createContext();
 
 export const PostsProvider = ({ children }) => {
-    const [{ posts, isLoading, filteredPosts }, postsDispatcher] = useReducer(
-        postsReducer,
-        {
-            posts: [],
-            isLoading: false,
-            filteredPosts: [],
-        }
-    );
+    const [{ posts, isLoading }, postsDispatcher] = useReducer(postsReducer, {
+        posts: [],
+        isLoading: false,
+        sortDirection: 'asc',
+        searchTerm: '',
+    });
 
-    const refreshPosts = () => {
+    const fetchPosts = queryParams => {
         postsDispatcher({ type: 'FETCH_POSTS_INIT' });
-        airtableApi.retrievePosts().firstPage((err, records) =>
-            postsDispatcher({
-                type: 'FETCH_POSTS_SUCCESSFUL',
-                payload: {
-                    posts: records.map(records => records.fields),
-                },
+        airtableApi
+            .retrievePosts({
+                sortDirection: queryParams?.sortDirection,
+                searchTerm: queryParams?.searchTerm,
             })
-        );
+            .firstPage((err, records) =>
+                postsDispatcher({
+                    type: 'FETCH_POSTS_SUCCESSFUL',
+                    payload: {
+                        posts: records.map(records => records.fields),
+                        sortDirection: queryParams?.sortDirection,
+                        searchTerm: queryParams?.searchTerm,
+                    },
+                })
+            );
     };
 
-    const handleSort = direction => {
-        postsDispatcher({ type: 'FETCH_POSTS_INIT' });
-        // pass in sort parameter here
-        airtableApi.retrievePosts(direction).firstPage((err, records) =>
-            // sortBy(records, 'content')
-            postsDispatcher({
-                type: 'FETCH_POSTS_SUCCESSFUL',
-                payload: {
-                    posts: records.map(records => records.fields),
-                },
-            })
-        );
-    };
-
-    useEffect(refreshPosts, []);
-
-    const handleSearch = searchTerm => {
-        airtableApi.search(searchTerm).firstPage((err, records) => {
-            const filteredPosts = records.map(record => record.fields);
-            postsDispatcher({
-                type: 'FILTER_POSTS_SUCCESSFUL',
-                payload: { filteredPosts },
-            });
-        });
-    };
+    useEffect(fetchPosts, []);
 
     const createPost = newPost => {
         airtableApi.createPost(newPost);
-        refreshPosts();
+        fetchPosts();
     };
 
     return (
         <PostsContext.Provider
             value={{
                 createPost,
-                handleSearch,
+                fetchPosts,
                 posts,
                 isLoading,
-                filteredPosts,
-                handleSort,
             }}
         >
             {children}

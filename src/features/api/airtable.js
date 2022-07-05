@@ -7,25 +7,36 @@ const base = new Airtable({
     apiKey: process.env.REACT_APP_AIRTABLE_API_KEY,
 }).base(process.env.REACT_APP_AIRTABLE_BASE_ID);
 
-const retrievePosts = direction =>
-    base(TABLE_NAME).select({
+const retrievePosts = ({ sortDirection, searchTerm }) => {
+    let params = {
         view: 'Grid view',
-        sort: [{ field: 'content', direction: direction ? direction : 'desc' }],
         pageSize: PAGE_SIZE,
-    });
-
-const search = searchTerm =>
-    base(TABLE_NAME).select({
-        view: 'Grid view',
-        filterByFormula: `SEARCH('${searchTerm.toLowerCase()}', {content})`,
-        pageSize: PAGE_SIZE,
-    });
+    };
+    if (searchTerm) {
+        params = {
+            ...params,
+            filterByFormula: `SEARCH('${searchTerm.toLowerCase()}', {content})`,
+        };
+    }
+    if (sortDirection) {
+        params = {
+            ...params,
+            sort: [
+                {
+                    field: 'content',
+                    direction: sortDirection ? sortDirection : 'desc',
+                },
+            ],
+        };
+    }
+    return base(TABLE_NAME).select(params);
+};
 
 const createPost = post =>
     base(TABLE_NAME).create([
         { fields: { username: post.username, content: post.content } },
     ]);
 
-const api = { retrievePosts, search, createPost };
+const api = { retrievePosts, createPost };
 
 export default api;

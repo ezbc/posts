@@ -7,7 +7,7 @@ import Sort from 'features/Sort';
 import usePosts, { PostsProvider } from 'features/PostState/usePosts';
 
 const Posts = styled(({ className }) => {
-    const { isLoading, filteredPosts } = usePosts();
+    const { isLoading, posts } = usePosts();
 
     return (
         <div className={className}>
@@ -20,7 +20,7 @@ const Posts = styled(({ className }) => {
                     <p>Is Loading</p>
                 ) : (
                     <div className="posts">
-                        {filteredPosts.map((post, index) => (
+                        {posts.map((post, index) => (
                             <Post
                                 username={post.username}
                                 content={post.content}
