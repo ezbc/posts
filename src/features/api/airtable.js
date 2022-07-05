@@ -19,7 +19,10 @@ const search = searchTerm =>
         pageSize: 10,
     });
 
-const createPost = post => base(TABLE_NAME).create([{ fields: post }]);
+const createPost = post =>
+    base(TABLE_NAME).create([
+        { fields: { username: post.username, content: post.content } },
+    ]);
 
 const api = { retrievePosts, search, createPost };
 
