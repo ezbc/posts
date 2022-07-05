@@ -1,64 +1,40 @@
 import { createContext, useContext, useEffect, useReducer } from 'react';
 import postsReducer from './postsReducer';
-import Airtable from 'airtable';
+import airtableApi from 'features/api/airtable';
 
 export const PostsContext = createContext();
 
 export const PostsProvider = ({ children }) => {
-    const base = new Airtable({
-        apiKey: process.env.REACT_APP_AIRTABLE_API_KEY,
-    }).base(process.env.REACT_APP_AIRTABLE_BASE_ID);
+    const [{ posts, isLoading }, postsDispatcher] = useReducer(postsReducer, {
+        posts: [],
+        isLoading: false,
+        sortDirection: 'asc',
+        searchTerm: '',
+    });
 
-    const [{ posts, isLoading, filteredPosts }, postsDispatcher] = useReducer(
-        postsReducer,
-        {
-            posts: [],
-            isLoading: false,
-            filteredPosts: [],
-        }
-    );
-
-    const fetchPosts = () => {
+    const fetchPosts = queryParams => {
         postsDispatcher({ type: 'FETCH_POSTS_INIT' });
-        base('posts')
-            .select({ view: 'Grid view' })
+        airtableApi
+            .retrievePosts({
+                sortDirection: queryParams?.sortDirection,
+                searchTerm: queryParams?.searchTerm,
+            })
             .firstPage((err, records) =>
                 postsDispatcher({
                     type: 'FETCH_POSTS_SUCCESSFUL',
                     payload: {
                         posts: records.map(records => records.fields),
+                        sortDirection: queryParams?.sortDirection,
+                        searchTerm: queryParams?.searchTerm,
                     },
                 })
             );
     };
-    useEffect(() => {
-        fetchPosts();
-    }, []);
 
-    const handleSearch = searchTerm => {
-        base('posts')
-            .select({
-                view: 'Grid view',
-                filterByFormula: `SEARCH('${searchTerm.toLowerCase()}', {content})`,
-            })
-            .firstPage((err, records) => {
-                const filteredPosts = records.map(record => record.fields);
-                postsDispatcher({
-                    type: 'FILTER_POSTS_SUCCESSFUL',
-                    payload: { filteredPosts },
-                });
-            });
-    };
+    useEffect(fetchPosts, []);
 
     const createPost = newPost => {
-        base('posts').create([
-            {
-                fields: {
-                    username: newPost.username,
-                    content: newPost.content,
-                },
-            },
-        ]);
+        airtableApi.createPost(newPost);
         fetchPosts();
     };
 
@@ -66,10 +42,9 @@ export const PostsProvider = ({ children }) => {
         <PostsContext.Provider
             value={{
                 createPost,
-                handleSearch,
+                fetchPosts,
                 posts,
                 isLoading,
-                filteredPosts,
             }}
         >
             {children}

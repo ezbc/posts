@@ -10,13 +10,8 @@ const postsReducer = (state, action) => {
             ...state,
             isLoading: false,
             posts: action.payload.posts,
-            filteredPosts: action.payload.posts,
-        };
-    }
-    if (action.type == 'FILTER_POSTS_SUCCESSFUL') {
-        return {
-            ...state,
-            filteredPosts: action.payload.filteredPosts,
+            sortDirection: action.payload.sortDirection,
+            searchTerm: action.payload.searchTerm,
         };
     }
 };

@@ -6,11 +6,11 @@ import usePosts from 'features/PostState/usePosts';
 
 function Search({ className }) {
     const [searchText, setSearchText] = useState('');
-    const { handleSearch } = usePosts();
+    const { fetchPosts } = usePosts();
 
     const submit = event => {
         event.preventDefault();
-        !isNil(searchText) && handleSearch(searchText);
+        !isNil(searchText) && fetchPosts({ searchTerm: searchText });
     };
 
     return (
