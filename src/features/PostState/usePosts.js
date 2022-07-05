@@ -1,16 +1,31 @@
-import { createContext, useContext, useEffect, useReducer } from 'react';
+import {
+    createContext,
+    useContext,
+    useEffect,
+    useReducer,
+    useRef,
+} from 'react';
 import postsReducer from './postsReducer';
 import airtableApi from 'features/api/airtable';
 
 export const PostsContext = createContext();
 
 export const PostsProvider = ({ children }) => {
-    const [{ posts, isLoading }, postsDispatcher] = useReducer(postsReducer, {
-        posts: [],
-        isLoading: false,
-        sortDirection: 'asc',
-        searchTerm: '',
-    });
+    const retrieveNextPage = useRef();
+    const [{ posts, isLoading, pagesLeftToLoad }, postsDispatcher] = useReducer(
+        postsReducer,
+        {
+            posts: [],
+            isLoading: false,
+            sortDirection: 'asc',
+            searchTerm: '',
+            pagesLeftToLoad: true,
+        }
+    );
+    const endPagination = () =>
+        postsDispatcher({
+            type: 'END_PAGINATION',
+        });
 
     const fetchPosts = queryParams => {
         postsDispatcher({ type: 'FETCH_POSTS_INIT' });
@@ -19,16 +34,17 @@ export const PostsProvider = ({ children }) => {
                 sortDirection: queryParams?.sortDirection,
                 searchTerm: queryParams?.searchTerm,
             })
-            .firstPage((err, records) =>
+            .eachPage((records, fetchNextPage) => {
+                retrieveNextPage.current = fetchNextPage;
                 postsDispatcher({
-                    type: 'FETCH_POSTS_SUCCESSFUL',
+                    type: 'ADD_PAGE_OF_POSTS',
                     payload: {
-                        posts: records.map(records => records.fields),
+                        newPosts: records.map(records => records.fields),
                         sortDirection: queryParams?.sortDirection,
                         searchTerm: queryParams?.searchTerm,
                     },
-                })
-            );
+                });
+            }, endPagination);
     };
 
     useEffect(fetchPosts, []);
@@ -43,6 +59,8 @@ export const PostsProvider = ({ children }) => {
             value={{
                 createPost,
                 fetchPosts,
+                pagesLeftToLoad,
+                loadNextPage: retrieveNextPage.current,
                 posts,
                 isLoading,
             }}
