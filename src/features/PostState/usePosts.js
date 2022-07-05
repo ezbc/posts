@@ -26,6 +26,20 @@ export const PostsProvider = ({ children }) => {
         );
     };
 
+    const handleSort = direction => {
+        postsDispatcher({ type: 'FETCH_POSTS_INIT' });
+        // pass in sort parameter here
+        airtableApi.retrievePosts(direction).firstPage((err, records) =>
+            // sortBy(records, 'content')
+            postsDispatcher({
+                type: 'FETCH_POSTS_SUCCESSFUL',
+                payload: {
+                    posts: records.map(records => records.fields),
+                },
+            })
+        );
+    };
+
     useEffect(refreshPosts, []);
 
     const handleSearch = searchTerm => {
@@ -51,6 +65,7 @@ export const PostsProvider = ({ children }) => {
                 posts,
                 isLoading,
                 filteredPosts,
+                handleSort,
             }}
         >
             {children}

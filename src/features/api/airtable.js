@@ -1,22 +1,24 @@
 import Airtable from 'airtable';
 
 const TABLE_NAME = 'posts';
+const PAGE_SIZE = 3;
 
 const base = new Airtable({
     apiKey: process.env.REACT_APP_AIRTABLE_API_KEY,
 }).base(process.env.REACT_APP_AIRTABLE_BASE_ID);
 
-const retrievePosts = () =>
+const retrievePosts = direction =>
     base(TABLE_NAME).select({
         view: 'Grid view',
-        pageSize: 10,
+        sort: [{ field: 'content', direction: direction ? direction : 'desc' }],
+        pageSize: PAGE_SIZE,
     });
 
 const search = searchTerm =>
     base(TABLE_NAME).select({
         view: 'Grid view',
         filterByFormula: `SEARCH('${searchTerm.toLowerCase()}', {content})`,
-        pageSize: 10,
+        pageSize: PAGE_SIZE,
     });
 
 const createPost = post =>
