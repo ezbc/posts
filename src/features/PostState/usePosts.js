@@ -1,64 +1,56 @@
-import { createContext, useContext, useEffect, useReducer } from 'react';
+import {
+    createContext,
+    useContext,
+    useEffect,
+    useReducer,
+    useRef,
+} from 'react';
 import postsReducer from './postsReducer';
-import Airtable from 'airtable';
+import airtableApi from 'features/api/airtable';
 
 export const PostsContext = createContext();
 
 export const PostsProvider = ({ children }) => {
-    const base = new Airtable({
-        apiKey: process.env.REACT_APP_AIRTABLE_API_KEY,
-    }).base(process.env.REACT_APP_AIRTABLE_BASE_ID);
-
-    const [{ posts, isLoading, filteredPosts }, postsDispatcher] = useReducer(
+    const retrieveNextPage = useRef();
+    const [{ posts, isLoading, pagesLeftToLoad }, postsDispatcher] = useReducer(
         postsReducer,
         {
             posts: [],
             isLoading: false,
-            filteredPosts: [],
+            sortDirection: 'asc',
+            searchTerm: '',
+            pagesLeftToLoad: true,
         }
     );
+    const endPagination = () =>
+        postsDispatcher({
+            type: 'END_PAGINATION',
+        });
 
-    const fetchPosts = () => {
+    const fetchPosts = queryParams => {
         postsDispatcher({ type: 'FETCH_POSTS_INIT' });
-        base('posts')
-            .select({ view: 'Grid view' })
-            .firstPage((err, records) =>
-                postsDispatcher({
-                    type: 'FETCH_POSTS_SUCCESSFUL',
-                    payload: {
-                        posts: records.map(records => records.fields),
-                    },
-                })
-            );
-    };
-    useEffect(() => {
-        fetchPosts();
-    }, []);
-
-    const handleSearch = searchTerm => {
-        base('posts')
-            .select({
-                view: 'Grid view',
-                filterByFormula: `SEARCH('${searchTerm.toLowerCase()}', {content})`,
+        airtableApi
+            .retrievePosts({
+                sortDirection: queryParams?.sortDirection,
+                searchTerm: queryParams?.searchTerm,
             })
-            .firstPage((err, records) => {
-                const filteredPosts = records.map(record => record.fields);
+            .eachPage((records, fetchNextPage) => {
+                retrieveNextPage.current = fetchNextPage;
                 postsDispatcher({
-                    type: 'FILTER_POSTS_SUCCESSFUL',
-                    payload: { filteredPosts },
+                    type: 'ADD_PAGE_OF_POSTS',
+                    payload: {
+                        newPosts: records.map(records => records.fields),
+                        sortDirection: queryParams?.sortDirection,
+                        searchTerm: queryParams?.searchTerm,
+                    },
                 });
-            });
+            }, endPagination);
     };
+
+    useEffect(fetchPosts, []);
 
     const createPost = newPost => {
-        base('posts').create([
-            {
-                fields: {
-                    username: newPost.username,
-                    content: newPost.content,
-                },
-            },
-        ]);
+        airtableApi.createPost(newPost);
         fetchPosts();
     };
 
@@ -66,10 +58,11 @@ export const PostsProvider = ({ children }) => {
         <PostsContext.Provider
             value={{
                 createPost,
-                handleSearch,
+                fetchPosts,
+                pagesLeftToLoad,
+                loadNextPage: retrieveNextPage.current,
                 posts,
                 isLoading,
-                filteredPosts,
             }}
         >
             {children}

@@ -3,22 +3,25 @@ import AddPost from 'features/AddPost';
 import Search from 'features/Search';
 import Post from 'features/Post';
 import Header from 'features/Header';
+import Sort from 'features/Sort';
 import usePosts, { PostsProvider } from 'features/PostState/usePosts';
+import LoadMore from './LoadMore';
 
 const Posts = styled(({ className }) => {
-    const { isLoading, filteredPosts } = usePosts();
+    const { isLoading, posts } = usePosts();
 
     return (
         <div className={className}>
             <Header></Header>
             <AddPost />
             <Search />
+            <Sort />
             <div>
                 {isLoading ? (
                     <p>Is Loading</p>
                 ) : (
                     <div className="posts">
-                        {filteredPosts.map((post, index) => (
+                        {posts.map((post, index) => (
                             <Post
                                 username={post.username}
                                 content={post.content}
@@ -28,6 +31,7 @@ const Posts = styled(({ className }) => {
                     </div>
                 )}
             </div>
+            <LoadMore />
         </div>
     );
 })`
