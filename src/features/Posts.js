@@ -5,6 +5,7 @@ import Post from 'features/Post';
 import Header from 'features/Header';
 import Sort from 'features/Sort';
 import usePosts, { PostsProvider } from 'features/PostState/usePosts';
+import LoadMore from './LoadMore';
 
 const Posts = styled(({ className }) => {
     const { isLoading, posts } = usePosts();
@@ -30,6 +31,7 @@ const Posts = styled(({ className }) => {
                     </div>
                 )}
             </div>
+            <LoadMore />
         </div>
     );
 })`
